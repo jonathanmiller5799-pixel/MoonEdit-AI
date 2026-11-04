@@ -38,10 +38,11 @@ jobs:
           p = Path("app/build.gradle.kts")
           s = p.read_text()
           old = '    kotlinOptions {\n        jvmTarget = "17"\n    }'
-          new = '    compilerOptions {\n        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)\n    }'
           if old not in s:
               raise SystemExit("Expected Kotlin jvmTarget block was not found; refusing to modify unknown source.")
-          p.write_text(s.replace(old, new, 1))
+          s = s.replace(old, "", 1)
+          s += '\n\nkotlin {\n    compilerOptions {\n        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)\n    }\n}\n'
+          p.write_text(s)
           PY
 
       - name: Generate complete Gradle wrapper
